@@ -103,8 +103,7 @@ void input_position(){
 }
 
 //***  優先度情報入力  ***
-void input_priority()
-{
+void input_priority(){
     //printf("Priority__Init\n");
     //優先度初期化
     for (int i = 0; i < 5; i++)
@@ -113,6 +112,7 @@ void input_priority()
         //printf("%d,", block[i].priority);
     }
     //printf("\n");
+    
 
     //*** 五角形内にあるか確認 ***
     //printf("Priority_PLUS\n");
@@ -152,6 +152,9 @@ void init_map(){
     map[15] = COLOR_YELLOW;
 }
 
+//モーター停止
+//   かつ
+//カウントリセット
 void stop_and_reset(){
     //モーター停止
     ev3_motor_set_power(EV3_PORT_C, 0);
@@ -161,73 +164,61 @@ void stop_and_reset(){
     ev3_motor_reset_counts(left_motor);
 }
 
+//調整残り0度のみ
 //whileで完結  回転中心マスにブロックがない場合
 void rotate(int degree){
 
     stop_and_reset();
 
-    switch (abs(degree))
-    {
+    switch (abs(degree)){
     case 0:
+
         //直進
+        ev3_motor_set_power(right_motor, 9);
+        ev3_motor_set_power(left_motor, 10);
+        while (ev3_motor_get_counts(right_motor) < 160);
         //カウントリセット
-        ev3_motor_reset_counts(right_motor);
-        ev3_motor_reset_counts(left_motor);
-        //直進
-        while (ev3_motor_get_counts(right_motor) < 150)
-        {
-            ev3_motor_set_power(right_motor, 20);
-            ev3_motor_set_power(left_motor, 20);
-        }
-        //カウントリセット
-        ev3_motor_reset_counts(right_motor);
-        ev3_motor_reset_counts(left_motor);
+        stop_and_reset();
         break;
     case 30:
-        if (degree > 0)
-        {
+        if (degree > 0){
             //カウントリセット
             ev3_motor_reset_counts(right_motor);
             ev3_motor_reset_counts(left_motor);
             //右回転
-            while (abs(ev3_motor_get_counts(right_motor)) < 7)
-            {
-                ev3_motor_set_power(right_motor, -15);
-                ev3_motor_set_power(left_motor, 30);
+            while (abs(ev3_motor_get_counts(right_motor)) < 10){
+                ev3_motor_set_power(right_motor, -5);
+                ev3_motor_set_power(left_motor, 10);
             }
             //カウントリセット
             ev3_motor_reset_counts(right_motor);
             ev3_motor_reset_counts(left_motor);
             //直進
-            while (ev3_motor_get_counts(right_motor) < 100)
-            {
-                ev3_motor_set_power(right_motor, 20);
-                ev3_motor_set_power(left_motor, 20);
+            while (ev3_motor_get_counts(right_motor) < 150){
+                ev3_motor_set_power(right_motor, 10);
+                ev3_motor_set_power(left_motor, 10);
             }
             //カウントリセット
             ev3_motor_reset_counts(right_motor);
             ev3_motor_reset_counts(left_motor);
         }
-        else
-        {
+        else{
             //左回転
             //カウントリセット
             ev3_motor_reset_counts(right_motor);
             ev3_motor_reset_counts(left_motor);
-            //右回転
-            while (abs(ev3_motor_get_counts(right_motor)) < 15)
-            {
-                ev3_motor_set_power(right_motor, 30);
-                ev3_motor_set_power(left_motor, -15);
+            while (abs(ev3_motor_get_counts(right_motor)) < 15){
+                ev3_motor_set_power(right_motor, 10);
+                ev3_motor_set_power(left_motor, -5);
             }
             //カウントリセット
             ev3_motor_reset_counts(right_motor);
             ev3_motor_reset_counts(left_motor);
             //直進
-            while (ev3_motor_get_counts(right_motor) < 170)
+            while (ev3_motor_get_counts(right_motor) < 200)
             {
-                ev3_motor_set_power(right_motor, 20);
-                ev3_motor_set_power(left_motor, 20);
+                ev3_motor_set_power(right_motor, 10);
+                ev3_motor_set_power(left_motor, 10);
             }
             //カウントリセット
             ev3_motor_reset_counts(right_motor);
@@ -245,8 +236,8 @@ void rotate(int degree){
             //右回転
             while (abs(ev3_motor_get_counts(right_motor)) < 15)
             {
-                ev3_motor_set_power(right_motor, -15);
-                ev3_motor_set_power(left_motor, 30);
+                ev3_motor_set_power(right_motor, -5);
+                ev3_motor_set_power(left_motor, 10);
             }
             //カウントリセット
             ev3_motor_reset_counts(right_motor);
@@ -254,33 +245,31 @@ void rotate(int degree){
             //直進
             while (ev3_motor_get_counts(right_motor) < 90)
             {
-                ev3_motor_set_power(right_motor, 20);
-                ev3_motor_set_power(left_motor, 20);
+                ev3_motor_set_power(right_motor, 10);
+                ev3_motor_set_power(left_motor, 10);
             }
             //カウントリセット
             ev3_motor_reset_counts(right_motor);
             ev3_motor_reset_counts(left_motor);
         }
-        else
-        {
+        else{
             //左回転
             //カウントリセット
             ev3_motor_reset_counts(right_motor);
             ev3_motor_reset_counts(left_motor);
             //右回転
-            while (abs(ev3_motor_get_counts(right_motor)) < 13)
-            {
-                ev3_motor_set_power(right_motor, 30);
-                ev3_motor_set_power(left_motor, -15);
+            while (abs(ev3_motor_get_counts(right_motor)) < 30){
+                ev3_motor_set_power(right_motor, 10);
+                ev3_motor_set_power(left_motor, -5);
             }
             //カウントリセット
             ev3_motor_reset_counts(right_motor);
             ev3_motor_reset_counts(left_motor);
             //直進
-            while (ev3_motor_get_counts(right_motor) < 170)
+            while (ev3_motor_get_counts(right_motor) < 160)
             {
-                ev3_motor_set_power(right_motor, 20);
-                ev3_motor_set_power(left_motor, 20);
+                ev3_motor_set_power(right_motor, 10);
+                ev3_motor_set_power(left_motor, 10);
             }
             //カウントリセット
             ev3_motor_reset_counts(right_motor);
@@ -288,51 +277,49 @@ void rotate(int degree){
         }
         break;
     case 60:
-        if (degree > 0)
-        {
+        if (degree > 0){
             //右回転
             //カウントリセット
             ev3_motor_reset_counts(right_motor);
             ev3_motor_reset_counts(left_motor);
             //右回転
-            while (abs(ev3_motor_get_counts(right_motor)) < 20)
+            while (abs(ev3_motor_get_counts(right_motor)) < 40)
             {
-                ev3_motor_set_power(right_motor, -15);
-                ev3_motor_set_power(left_motor, 30);
+                ev3_motor_set_power(right_motor, -5);
+                ev3_motor_set_power(left_motor, 10);
             }
             //カウントリセット
             ev3_motor_reset_counts(right_motor);
             ev3_motor_reset_counts(left_motor);
             //直進
-            while (ev3_motor_get_counts(right_motor) < 70)
+            while (ev3_motor_get_counts(right_motor) < 130)
             {
-                ev3_motor_set_power(right_motor, 20);
-                ev3_motor_set_power(left_motor, 20);
+                ev3_motor_set_power(right_motor, 10);
+                ev3_motor_set_power(left_motor, 10);
             }
             //カウントリセット
             ev3_motor_reset_counts(right_motor);
             ev3_motor_reset_counts(left_motor);
         }
-        else
-        {
+        else{
             //左回転
             //カウントリセット
             ev3_motor_reset_counts(right_motor);
             ev3_motor_reset_counts(left_motor);
             //右回転
-            while (abs(ev3_motor_get_counts(right_motor)) < 50)
+            while (abs(ev3_motor_get_counts(right_motor)) < 80)
             {
-                ev3_motor_set_power(right_motor, 30);
-                ev3_motor_set_power(left_motor, -15);
+                ev3_motor_set_power(right_motor, 10);
+                ev3_motor_set_power(left_motor, -5);
             }
             //カウントリセット
             ev3_motor_reset_counts(right_motor);
             ev3_motor_reset_counts(left_motor);
             //直進
-            while (ev3_motor_get_counts(right_motor) < 170)
+            while (ev3_motor_get_counts(right_motor) < 230)
             {
-                ev3_motor_set_power(right_motor, 20);
-                ev3_motor_set_power(left_motor, 20);
+                ev3_motor_set_power(right_motor, 10);
+                ev3_motor_set_power(left_motor, 10);
             }
             //カウントリセット
             ev3_motor_reset_counts(right_motor);
@@ -347,77 +334,24 @@ void rotate(int degree){
             ev3_motor_reset_counts(right_motor);
             ev3_motor_reset_counts(left_motor);
             //右回転
-            while (abs(ev3_motor_get_counts(right_motor)) < 35)
+            while (abs(ev3_motor_get_counts(right_motor)) < 60)
             {
-                ev3_motor_set_power(right_motor, -15);
-                ev3_motor_set_power(left_motor, 30);
+                ev3_motor_set_power(right_motor, -5);
+                ev3_motor_set_power(left_motor, 10);
             }
             //カウントリセット
             ev3_motor_reset_counts(right_motor);
             ev3_motor_reset_counts(left_motor);
             //直進
-            while (ev3_motor_get_counts(right_motor) < 20){
-                ev3_motor_set_power(right_motor, 20);
-                ev3_motor_set_power(left_motor, 20);
+            while (ev3_motor_get_counts(right_motor) < 60){
+                ev3_motor_set_power(right_motor, 10);
+                ev3_motor_set_power(left_motor, 10);
             }
             //カウントリセット
             ev3_motor_reset_counts(right_motor);
             ev3_motor_reset_counts(left_motor);
         }
-        else
-        {
-            //左回転
-            //カウントリセット
-            ev3_motor_reset_counts(right_motor);
-            ev3_motor_reset_counts(left_motor);
-            //右回転
-            while (abs(ev3_motor_get_counts(right_motor)) < 80)
-            {
-                ev3_motor_set_power(right_motor, 30);
-                ev3_motor_set_power(left_motor, -15);
-            }
-            //カウントリセット
-            ev3_motor_reset_counts(right_motor);
-            ev3_motor_reset_counts(left_motor);
-            //直進
-            while (ev3_motor_get_counts(right_motor) < 155)
-            {
-                ev3_motor_set_power(right_motor, 20);
-                ev3_motor_set_power(left_motor, 20);
-            }
-            //カウントリセット
-            ev3_motor_reset_counts(right_motor);
-            ev3_motor_reset_counts(left_motor);
-        }
-        break;
-    case 105:
-        if (degree > 0)
-        {
-            //右回転
-            //カウントリセット
-            ev3_motor_reset_counts(right_motor);
-            ev3_motor_reset_counts(left_motor);
-            //右回転
-            while (abs(ev3_motor_get_counts(right_motor)) < 90)
-            {
-                ev3_motor_set_power(right_motor, -15);
-                ev3_motor_set_power(left_motor, 30);
-            }
-            //カウントリセット
-            ev3_motor_reset_counts(right_motor);
-            ev3_motor_reset_counts(left_motor);
-            //直進
-            while (ev3_motor_get_counts(right_motor) < 105)
-            {
-                ev3_motor_set_power(right_motor, 20);
-                ev3_motor_set_power(left_motor, 20);
-            }
-            //カウントリセット
-            ev3_motor_reset_counts(right_motor);
-            ev3_motor_reset_counts(left_motor);
-        }
-        else
-        {
+        else{
             //左回転
             //カウントリセット
             ev3_motor_reset_counts(right_motor);
@@ -425,8 +359,8 @@ void rotate(int degree){
             //右回転
             while (abs(ev3_motor_get_counts(right_motor)) < 120)
             {
-                ev3_motor_set_power(right_motor, 30);
-                ev3_motor_set_power(left_motor, -15);
+                ev3_motor_set_power(right_motor, 10);
+                ev3_motor_set_power(left_motor, -5);
             }
             //カウントリセット
             ev3_motor_reset_counts(right_motor);
@@ -434,8 +368,58 @@ void rotate(int degree){
             //直進
             while (ev3_motor_get_counts(right_motor) < 160)
             {
-                ev3_motor_set_power(right_motor, 20);
-                ev3_motor_set_power(left_motor, 20);
+                ev3_motor_set_power(right_motor, 10);
+                ev3_motor_set_power(left_motor, 10);
+            }
+            //カウントリセット
+            ev3_motor_reset_counts(right_motor);
+            ev3_motor_reset_counts(left_motor);
+        }
+        break;
+    case 105:
+        if (degree > 0){
+            //右回転
+            //カウントリセット
+            ev3_motor_reset_counts(right_motor);
+            ev3_motor_reset_counts(left_motor);
+            //右回転
+            while (abs(ev3_motor_get_counts(right_motor)) < 90)
+            {
+                ev3_motor_set_power(right_motor, -5);
+                ev3_motor_set_power(left_motor, 10);
+            }
+            //カウントリセット
+            ev3_motor_reset_counts(right_motor);
+            ev3_motor_reset_counts(left_motor);
+            //直進
+            while (ev3_motor_get_counts(right_motor) < 105)
+            {
+                ev3_motor_set_power(right_motor, 10);
+                ev3_motor_set_power(left_motor, 10);
+            }
+            //カウントリセット
+            ev3_motor_reset_counts(right_motor);
+            ev3_motor_reset_counts(left_motor);
+        }
+        else{
+            //左回転
+            //カウントリセット
+            ev3_motor_reset_counts(right_motor);
+            ev3_motor_reset_counts(left_motor);
+            //右回転
+            while (abs(ev3_motor_get_counts(right_motor)) < 180)
+            {
+                ev3_motor_set_power(right_motor, 10);
+                ev3_motor_set_power(left_motor, -5);
+            }
+            //カウントリセット
+            ev3_motor_reset_counts(right_motor);
+            ev3_motor_reset_counts(left_motor);
+            //直進
+            while (ev3_motor_get_counts(right_motor) < 210)
+            {
+                ev3_motor_set_power(right_motor, 10);
+                ev3_motor_set_power(left_motor, 10);
             }
             //カウントリセット
             ev3_motor_reset_counts(right_motor);
@@ -443,42 +427,39 @@ void rotate(int degree){
         }
         break;
     case 120:
-        if (degree > 0)
-        {
+        if (degree > 0){
             //右回転
             //カウントリセット
             ev3_motor_reset_counts(right_motor);
             ev3_motor_reset_counts(left_motor);
             //右回転
-            while (abs(ev3_motor_get_counts(right_motor)) < 110)
+            while (abs(ev3_motor_get_counts(right_motor)) < 120)
             {
-                ev3_motor_set_power(right_motor, -15);
-                ev3_motor_set_power(left_motor, 30);
+                ev3_motor_set_power(right_motor, -5);
+                ev3_motor_set_power(left_motor, 10);
             }
             //カウントリセット
             ev3_motor_reset_counts(right_motor);
             ev3_motor_reset_counts(left_motor);
             //直進
-            while (ev3_motor_get_counts(right_motor) < 85)
+            while (ev3_motor_get_counts(right_motor) < 30)
             {
-                ev3_motor_set_power(right_motor, 20);
-                ev3_motor_set_power(left_motor, 20);
+                ev3_motor_set_power(right_motor, 10);
+                ev3_motor_set_power(left_motor, 10);
             }
             //カウントリセット
             ev3_motor_reset_counts(right_motor);
             ev3_motor_reset_counts(left_motor);
-        }
-        else
-        {
+        }else{
             //左回転
             //カウントリセット
             ev3_motor_reset_counts(right_motor);
             ev3_motor_reset_counts(left_motor);
             //右回転
-            while (abs(ev3_motor_get_counts(right_motor)) < 140)
+            while (abs(ev3_motor_get_counts(right_motor)) < 210)
             {
-                ev3_motor_set_power(right_motor, 30);
-                ev3_motor_set_power(left_motor, -15);
+                ev3_motor_set_power(right_motor, 10);
+                ev3_motor_set_power(left_motor, -5);
             }
             //カウントリセット
             ev3_motor_reset_counts(right_motor);
@@ -486,8 +467,8 @@ void rotate(int degree){
             //直進
             while (ev3_motor_get_counts(right_motor) < 130)
             {
-                ev3_motor_set_power(right_motor, 20);
-                ev3_motor_set_power(left_motor, 20);
+                ev3_motor_set_power(right_motor, 10);
+                ev3_motor_set_power(left_motor, 10);
             }
             //カウントリセット
             ev3_motor_reset_counts(right_motor);
@@ -495,51 +476,47 @@ void rotate(int degree){
         }
         break;
     case 135:
-        if (degree > 0)
-        {
+        if (degree > 0){
             //右回転
             //カウントリセット
             ev3_motor_reset_counts(right_motor);
             ev3_motor_reset_counts(left_motor);
             //右回転
-            while (abs(ev3_motor_get_counts(right_motor)) < 130)
+            while (abs(ev3_motor_get_counts(right_motor)) < 140)
             {
-                ev3_motor_set_power(right_motor, -15);
-                ev3_motor_set_power(left_motor, 30);
+                ev3_motor_set_power(right_motor, -5);
+                ev3_motor_set_power(left_motor, 10);
             }
             //カウントリセット
             ev3_motor_reset_counts(right_motor);
             ev3_motor_reset_counts(left_motor);
             //直進
-            while (ev3_motor_get_counts(right_motor) < 85)
+            while (ev3_motor_get_counts(right_motor) < 5)
             {
-                ev3_motor_set_power(right_motor, 20);
-                ev3_motor_set_power(left_motor, 20);
+                ev3_motor_set_power(right_motor, 10);
+                ev3_motor_set_power(left_motor, 10);
             }
             //カウントリセット
             ev3_motor_reset_counts(right_motor);
             ev3_motor_reset_counts(left_motor);
         }
-        else
-        {
+        else{
             //左回転
             //カウントリセット
             ev3_motor_reset_counts(right_motor);
             ev3_motor_reset_counts(left_motor);
             //右回転
-            while (abs(ev3_motor_get_counts(right_motor)) < 200)
-            {
-                ev3_motor_set_power(right_motor, 30);
-                ev3_motor_set_power(left_motor, -15);
+            while (abs(ev3_motor_get_counts(right_motor)) < 240){
+                ev3_motor_set_power(right_motor, 10);
+                ev3_motor_set_power(left_motor, -5);
             }
             //カウントリセット
             ev3_motor_reset_counts(right_motor);
             ev3_motor_reset_counts(left_motor);
             //直進
-            while (ev3_motor_get_counts(right_motor) < 130)
-            {
-                ev3_motor_set_power(right_motor, 20);
-                ev3_motor_set_power(left_motor, 20);
+            while (ev3_motor_get_counts(right_motor) < 130){
+                ev3_motor_set_power(right_motor, 10);
+                ev3_motor_set_power(left_motor, 10);
             }
             //カウントリセット
             ev3_motor_reset_counts(right_motor);
@@ -547,51 +524,45 @@ void rotate(int degree){
         }
         break;
     case 150:
-        if (degree > 0)
-        {
+        if (degree > 0){
             //右回転
             //カウントリセット
             ev3_motor_reset_counts(right_motor);
             ev3_motor_reset_counts(left_motor);
             //右回転
-            while (abs(ev3_motor_get_counts(right_motor)) < 180)
-            {
-                ev3_motor_set_power(right_motor, -15);
-                ev3_motor_set_power(left_motor, 30);
+            while (abs(ev3_motor_get_counts(right_motor)) < 180){
+                ev3_motor_set_power(right_motor, -5);
+                ev3_motor_set_power(left_motor, 10);
             }
             //カウントリセット
             ev3_motor_reset_counts(right_motor);
             ev3_motor_reset_counts(left_motor);
             //直進
-            while (ev3_motor_get_counts(right_motor) < 60)
-            {
-                ev3_motor_set_power(right_motor, 20);
-                ev3_motor_set_power(left_motor, 20);
+            while (ev3_motor_get_counts(right_motor) < 60){
+                ev3_motor_set_power(right_motor, 10);
+                ev3_motor_set_power(left_motor, 10);
             }
             //カウントリセット
             ev3_motor_reset_counts(right_motor);
             ev3_motor_reset_counts(left_motor);
-        }
-        else
-        {
+        }else{
             //左回転
             //カウントリセット
             ev3_motor_reset_counts(right_motor);
             ev3_motor_reset_counts(left_motor);
             //右回転
-            while (abs(ev3_motor_get_counts(right_motor)) < 250)
+            while (abs(ev3_motor_get_counts(right_motor)) < 300)
             {
-                ev3_motor_set_power(right_motor, 30);
-                ev3_motor_set_power(left_motor, -15);
+                ev3_motor_set_power(right_motor, 10);
+                ev3_motor_set_power(left_motor, -5);
             }
             //カウントリセット
             ev3_motor_reset_counts(right_motor);
             ev3_motor_reset_counts(left_motor);
             //直進
-            while (ev3_motor_get_counts(right_motor) < 130)
-            {
-                ev3_motor_set_power(right_motor, 20);
-                ev3_motor_set_power(left_motor, 20);
+            while (ev3_motor_get_counts(right_motor) < 30){
+                ev3_motor_set_power(right_motor, 10);
+                ev3_motor_set_power(left_motor, 10);
             }
             //カウントリセット
             ev3_motor_reset_counts(right_motor);
@@ -600,24 +571,17 @@ void rotate(int degree){
         break;
     case 180:
         //右回転
-        ev3_motor_set_power(right_motor, -20);
-        ev3_motor_set_power(left_motor, 20);
-        while (abs(ev3_motor_get_counts(right_motor)) < 280);
-
+        ev3_motor_set_power(right_motor, -10);
+        ev3_motor_set_power(left_motor, 10);
+        while (abs(ev3_motor_get_counts(right_motor)) < 320);
+        //カウントリセット
+        ev3_motor_reset_counts(right_motor);
+        ev3_motor_reset_counts(left_motor);
         break;
     default:
-        if (degree > 0)
-        {
-            //右回転
-        }
-        else
-        {
-            //左回転
-        }
         printf("****ERROR****\n");
-        while (1)
-        {
-        }
+        stop_and_reset();
+        while (1);
         break;
     }
 
@@ -637,14 +601,14 @@ void escape(int degree){
 
     stop_and_reset();
 
-    //1.バック
+    //****  1.バック  ****
     ev3_motor_set_power(right_motor, -40);
     ev3_motor_set_power(left_motor, -40);
     while (abs(ev3_motor_get_counts(right_motor)) < 70);
     
     stop_and_reset();
 
-    //2.左右どちらかに回転
+    //****  2.左右どちらかに回転  ****
     if(degree == 180){
         //何もしない
     }else if(degree > 0){
@@ -662,7 +626,7 @@ void escape(int degree){
     stop_and_reset();
 
     
-    //3.ブロックを避けるようにブロックを中心の弧を描くように回転
+    //**** 3.ブロックを避けるようにブロックを中心の弧を描くように回転 ****
     switch (abs(degree)){
     case 0:
         //回転
@@ -965,18 +929,11 @@ void escape(int degree){
         while(1);
         break;
     default:
-        if (degree > 0)
-        {
-            //右回転
-        }
-        else
-        {
-            //左回転
-        }
+        //エラーログ出力
         printf("****ERROR****\n");
-        while (1)
-        {
-        }
+        //モータ停止＆角カウントリセット
+        stop_and_reset();
+        while (1);
         break;
     }
 
@@ -985,9 +942,32 @@ void escape(int degree){
     while(1);
 }
 
+
+void test(){
+        //ライントレース
+        n_line_tracing(10,-1,PID_MIDDLE()-7);
+    
+        //色検知
+        if(lch_color() != 0){
+            //黒、白以外の色を検知した場合
+    
+            //機体の停止とモーター角リセット
+            stop_and_reset();
+            //色検知確認
+            ev3_speaker_play_tone(NOTE_B6, 100);
+    
+            //回転テスト
+            rotate(0);
+            //色検知終了
+            ev3_speaker_play_tone(NOTE_C4, 100);
+            
+            //while(1);
+        }
+    }
+
+//色検知
 bool_t detect_color(int mass_num){
-    if (ev3_color_sensor_get_color(EV3_PORT_2) == map[mass_num])
-    {
+    if (ev3_color_sensor_get_color(EV3_PORT_2) == map[mass_num]){
         return true;
     }
     return false;
@@ -998,6 +978,7 @@ bool_t detect_color(int mass_num){
 ///////////////////////////////////////////////////////////////////////////////////
 //**************   Public   *******************
 
+//PID値初期化
 void init_blocksort_gein(){
     //いい値リスト
     pid_set_data(&gein, 0.5, 0.000, 0.1);
@@ -1005,21 +986,19 @@ void init_blocksort_gein(){
 }
 
 //5つ運搬になっているか確認
+// ture::運搬済み
+//false::未運搬
 bool_t is_carried(){
     int cnt = 0;
-    for (int i = 0; i < 5; i++)
-    {
-        if (block[i].is_carry == true)
-        {
+    for (int i = 0; i < 5; i++){
+        if (block[i].is_carry == true){
             cnt++;
         }
     }
-    if (cnt == 5)
-    {
+    if (cnt == 5){
         return true;
     }
-    else
-    {
+    else{
         return false;
     }
 }
@@ -1034,17 +1013,17 @@ void set_block_position(int num, int pos){
     block[num].position = pos;
 }
 
-//ブロックの運搬フラグを返却
+//ブロックの運搬フラグを参照
 bool_t get_carry(int num){
     return block[num].is_carry;
 }
 
-//ブロックの位置を返却
+//ブロックの位置を参照
 int get_position(int num){
     return block[num].position;
 }
 
-//ブロックの優先度を返却
+//ブロックの優先度を参照
 int get_priority(int num){
     return block[num].priority;
 }
@@ -1098,6 +1077,7 @@ void init_blocksort(){
     printf("\n");
 }
 
+
 //メイン難所攻略
 void blocksort(){
 
@@ -1108,9 +1088,14 @@ void blocksort(){
     //escape(degree);
 
     
+    //テスト用
+    while(1){
+        test();
+    }
+
 
     //ライントレース
-    n_line_tracing(20,-1,PID_MIDDLE()-7);
+    n_line_tracing(10,-1,PID_MIDDLE()-7);
 
     //色検知
     int num_color = lch_color();
@@ -1131,26 +1116,35 @@ void blocksort(){
             vertical++;
             //横列リセット
             horizon = 0;
+            //ルートの節目確認のため音鳴らす
+            ev3_speaker_play_tone(NOTE_B6, 100);
+        }else{
+            //ルートの節目でない場合
+            //低音鳴らす
+            ev3_speaker_play_tone(NOTE_C4, 100);
         }
         //未来マス更新
         position_next = route[vertical][horizon + 1];
 
+        //過去・現在・未来マスを表示
         printf("pass:%d,now:%d,feature:%d\n",position_pass,position_now,position_next);
 
+        //3マス情報から曲がる角度を検索
         int degree = query_degree(position_pass,position_now,position_next);
         printf("degree:%d\n", degree);
+        //角度情報から回転
         rotate(degree);
-        while(1){
-            if(ev3_button_is_pressed(ENTER_BUTTON)){
-                break;
-            }
+
+        //中央ボタンが押されたら停止
+        if(ev3_button_is_pressed(ENTER_BUTTON)){
+            stop_and_reset();
+            while(1);
         }
     }
 }
 
 //終了判定
-bool_t block_is_finished()
-{
+bool_t block_is_finished(){
     /*
     if(ルート走り終えた == true){
 
