@@ -76,6 +76,9 @@ ev3_motor_stop(EV3_PORT_B, true);
 ev3_motor_stop(EV3_PORT_C, true);
 
 //縦列駐車開始
+/**************************
+ * ここで駐車の調整
+ ***************************/
 ev3_motor_set_power(EV3_PORT_A,50);
   
 tslp_tsk(800);//アームを上げる
