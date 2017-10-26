@@ -9,9 +9,10 @@
 #include "n_light_sensor.h"
 #include <math.h>
 
-////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////
 //****  Private  ****
 ///////////////////////////////////////
+
 
 //ブロック情報構造体
 typedef struct BLOCK_DATA{
@@ -47,6 +48,9 @@ int get_priority(int cnt);
 //         てない:false
 bool_t is_carried();
 
+
+//ルート参照
+void get_route(int ver, int ho, int ret[ver][ho]);
 
 //ブロック並べ内でのPID値初期化
 void init_blocksort_gein();

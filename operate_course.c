@@ -156,7 +156,7 @@ void operate_init()
     //直進
  //  operate_set_data(0, 3000, false, 2);  //高速、直線にフィットする
 //    operate_set_data(0, 0, true, 1);
-    operate_set_data(0, 0, true, 1);
+    operate_set_data(0, 2700, true, 1);
     operate_set_data(1, 0, true, -1);
 //    operate_set_data(0, 0, true, 100);
   
@@ -178,8 +178,8 @@ void operate_running()
     operate_judge();
     operate_action();
 
-    //sprintf(str, "MODE:%d,%d", Judge_mode, Action_mode);
-    //ev3_lcd_draw_string(str, 10, 40);
+    sprintf(str, "MODE:%d,%d", Judge_mode, Action_mode);
+    ev3_lcd_draw_string(str, 10, 40);
 }
 
 bool_t operate_is_finished()

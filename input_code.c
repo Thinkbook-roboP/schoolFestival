@@ -9,61 +9,66 @@ void ofuro();
 
 
 
-//int型5桁で返す
 int input_code(){
-    
+       //int型5桁で返す
+  
     int fcode=12008;//最終的に渡す数字
     int flag=0;//0が押してない　1が上　2が右 3が下　4が左 5が中央
     int plusn=10000;//足す数字　初期は1万
     int error_handling=0;//0問題ない　1繰り上がってしまうため処理を阻止
     int rlcheck=0;//右と左に突き抜けないようにする確認用変数
 
-    ev3_lcd_set_font(EV3_FONT_MEDIUM); //文字サイズ指定ー中
-    
+     ev3_lcd_set_font(EV3_FONT_MEDIUM); //文字サイズ指定ー中
+   
+         
+         ev3_speaker_play_tone(NOTE_C4, 100);
+
+         displa(fcode,plusn);
+
+         while(flag!=5){
             
-    ev3_speaker_play_tone(NOTE_C4, 100);
+            flag=press_button();//0が押してない　1が上　2が右 3が下　4が左 5が中央
+         
 
-    displa(fcode,plusn);
-
-    while(flag!=5){
+            if(flag==1){
+              
+                error_handling=error_processing(fcode,plusn,flag);
                 
-        flag=press_button();//0が押してない　1が上　2が右 3が下　4が左 5が中央
-            
-
-        if(flag==1){
-                
-            error_handling=error_processing(fcode,plusn,flag);
-                    
-            if(error_handling==0){
+                if(error_handling==0){
                 fcode=fcode+plusn;
                 ev3_speaker_play_tone(NOTE_C4, 100);
-            }
-        }else if(flag==2){
-            rlcheck=plusn/10;//チェック
-            if(rlcheck>0){//0より大きかったら実行
+                }
+            }else if(flag==2){
+                rlcheck=plusn/10;//チェック
+                if(rlcheck>0){//0より大きかったら実行
                 plusn=plusn/10;
                 ev3_speaker_play_tone(NOTE_C4, 100);
-            }
-        }else if(flag==3){
-                
-            error_handling=error_processing(fcode,plusn,flag);
+                }
+            }else if(flag==3){
+               
+                error_handling=error_processing(fcode,plusn,flag);
 
-            if(error_handling==0){
+                if(error_handling==0){
                 fcode=fcode-plusn;
                 ev3_speaker_play_tone(NOTE_C4, 100);
-            }
-        }else if(flag==4){
-            rlcheck=plusn*10;//チェック
-            if(rlcheck<100000){//100000-10万より小さかったら実行
+                }
+            }else if(flag==4){
+                rlcheck=plusn*10;//チェック
+                if(rlcheck<100000){//100000-10万より小さかったら実行
                 plusn=plusn*10;
                 ev3_speaker_play_tone(NOTE_C4, 100);
+                }
+                
+
             }
-        }
-        displa(fcode,plusn);
-    }   
-    displa(114514,plusn);
-    ofuro();
-    return fcode;
+            
+             
+            displa(fcode,plusn);
+         }
+        
+        displa(114514,plusn);
+        ofuro();
+        return fcode;
 }
 
   int press_button(){

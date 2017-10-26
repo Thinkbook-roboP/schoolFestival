@@ -24,8 +24,8 @@ void n_line_tracing(int power, int edge, int target)
 
     Control_pow = pid_get_control(diff);
 
-    right = power + Control_pow * -1;
-    left = power - Control_pow * -1;
+    right = power + Control_pow * edge;
+    left = power - Control_pow * edge;
 
     if(right > 100) right = 100;
     else if(right < -100) right = -100;

@@ -4,8 +4,6 @@
 static int L_high = 0, L_low = 0;
 
 
-
-
 //画面出力
 void state_out_color(int mode)
 {
@@ -92,8 +90,6 @@ bool_t init_state_data()
 
                     //５秒待機
                     tslp_tsk(5000);
-
-
 
                     calib_mode = 0;
                     L_low = 999;

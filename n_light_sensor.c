@@ -10,10 +10,6 @@ static int LCH_R_HIGH = 0;
 static int LCH_G_HIGH = 0;
 static int LCH_B_HIGH = 0;
 
-static int L = 0;
-static int C = 0;
-static int H = 0;
-
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  PRIVATE
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -50,48 +46,8 @@ static void lch_change_rgb_data(rgb_raw_t *rgb, lch_raw_t *lch)
     lch->l = 116.0 * f_collect(xyz.l / XN) - 16.0;
     lch->c = 500.0 * (f_collect(xyz.l / XN) - f_collect(xyz.c / YN));
     lch->h = 200.0 * (f_collect(xyz.c / YN) - f_collect(xyz.h / ZN));
-
-    L = lch->l;
-    C = lch->c;
-    H = lch->h;
 }
 
-
-
-int judge_color(void){
-    lch_raw_t g;
-    
-    //g.l明るさ(明度)、g.c彩度、g.h色相角
-    g.l = L;
-    g.c = C;
-    g.h = H;
-        // printf("L:%f,C:%f,h:%f\n",g.l,g.c,g.h);
-      //   printf("V:%d\n",ev3_battery_voltage_mV());
-      //   tslp_tsk(900);
-
-    if(g.l>=93){//白の場合
-        return 0;
-    }else if(g.c>=45){//赤の場合
-       // printf("RED\n"); 
-        return 5;
-          
-    }else if(g.l>=65 && g.h>=55){//黄色の場合
-       // printf("YELLOW\n");  
-        return 4;
-          
-    }else if(g.l>=55 && g.h<=-25){//青色の場合
-        // printf("BLUE\n");  
-        return 2;
-          
-    }else if(g.l>=40 && g.l<=80 && g.h>=0 && g.h<=30 && g.c<=-20){//緑の場合
-       // printf("GREEN\n");  
-        return 3;
-          
-    }else{
-       // printf("NaN\n");  
-        return 0;
-    }
-}
 
 
 
@@ -109,9 +65,8 @@ void n_lch_init(rgb_raw_t* rgb)
 }
 
 
-
-
-void lch_get( lch_raw_t* lch ){
+void lch_get( lch_raw_t* lch )
+{
     rgb_raw_t rgb;
     
     ev3_color_sensor_get_rgb_raw(EV3_PORT_2, &rgb);
@@ -120,11 +75,10 @@ void lch_get( lch_raw_t* lch ){
 }
 
 
-//色情報を返す
-int lch_color(){
-    return judge_color();
+int lch_color()
+{
+    return 0;
 }
-
 
 
 void lch_high_color(rgb_raw_t* rgb)

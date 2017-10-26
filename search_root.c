@@ -12,7 +12,7 @@ int linecnt = 0;
 //現在地
 int position_now = 0;
 //計算用位置情報
-int b_pos[5];
+int b_position[5];
 //五角形のブロック数
 int in_cnt = 0;	
 //全辺数(有向グラフなので実際の辺×２)
@@ -23,11 +23,12 @@ int sideNum = 52;
 //なかった場合：-1
 int judge_block_in_mass(int mass){
     for(int i = 0; i < 5; i++){
-        if(mass == b_pos[i]){
+        if(mass == get_position(i)){
             //ブロックがあったら
             return i;
         }
     }
+
     //なかったら
     return -1;
 }
@@ -100,67 +101,36 @@ void init_sidelist(side* list){
 	//*** 15  ***
 	list[49].s = 15; list[49].e = 9; list[49].c = 10;
 	list[50].s = 15; list[50].e = 11; list[50].c = 10;
-    list[51].s = 15; list[51].e = 14; list[51].c = 10;
-    
-	for (int i = 0; i < sideNum - 1; i++) {
-		list[i].next = &(list[i + 1]);
-	}
-	list[sideNum - 1].next = NULL;
+	list[51].s = 15; list[51].e = 14; list[51].c = 10;
 }
 
 
 //ブロックのある位置に隣接するエッジのコストを爆上げする
 //運搬時にブロックのあるマスを通らないようにするため
-//引数::list:エッジリスト、block_num:今運搬してるブロック番号
-
-//問題点
-// エッジコスト更新が１のマス周辺のみ
-
-void update_edgecost(side* list, int block_num){
-    ////printf("update::start\n");
+void update_edgecost(side* list){
     //ブロックの数
     int num = 5;
-    //更新するブロックの位置配列
-    //運搬するブロックは更新しないため
-    int pos[num-1];
+    //ブロックの位置配列
+    int pos[5];
     //位置配列に値代入
-    //ブロックの総数だけ繰り返し
-    ////printf("target:block[%d]::pos:%d\n",block_num,b_pos[block_num]);
-    ////printf("Ignore:");
-    //配列カウンタ
-    int poscnt =  0;
     for(int i = 0; i < 5; i++){
-        //運搬するブロック以外のブロックマス更新
-        if(i != block_num){
-            pos[poscnt] = b_pos[i];
-            ////printf("%d:%d,",poscnt,pos[poscnt]);
-            poscnt++;
-        }
+        pos[i] = get_position(i);
     }
-    ////printf("\n");
 
     //ブロックの位置に隣接するエッジの探索
     int cnt = 0;
     //ブロックの数だけ繰り返し
-    for(int i = 0; i < num-1; i++){
+    for(int i = 0; i < num; i++){
         //listの分だけ繰り返し
-        ////printf("****%d****\n",pos[i]);
         while(cnt < sideNum){
             //エッジのスタート、エンドマスとブロックの位置が同じ場合
             if(list[cnt].s == pos[i] || list[cnt].e == pos[i]){
                 //エッジコストを爆上げ
-                ////printf("s:%d,e:%d\n",list[cnt].s, list[cnt].e);
                 list[cnt].c = 999;
             }
-            cnt++;
         }
-        cnt = 0;
     }
-
-    for (int i = 0; i < sideNum - 1; i++) {
-		list[i].next = &(list[i + 1]);
-	}
-	list[sideNum - 1].next = NULL;
+    
 }
 
 
@@ -190,7 +160,7 @@ int decide_goal(int num){
             return 6;
             break;
         default:
-            //printf("ERROR:Line41\n");
+            printf("ERROR:Line41\n");
             return -1;
             break;
     }
@@ -202,7 +172,7 @@ void move_force(side* sideList, int *list){
     int *ret = NULL;
     //コスト
     int cost;
-    int goal = b_pos[list[0]];
+    int goal = get_position(list[0]);
     dijsktra(N, sideList, position_now, goal, &ret, &cost);
     
     //ルート保存
@@ -240,7 +210,7 @@ void move_force(side* sideList, int *list){
     linecnt++;
     position_now = goal;
 
-    b_pos[0] = position_now;
+    set_block_position(list[0], position_now);
 
 
 }
@@ -250,6 +220,8 @@ void move_force(side* sideList, int *list){
 // side:辺リスト uncarry_num:リスト内の未運搬ブロック数　list:配列
 int compare_cost(side* sideList, int uncarry_num, int *list){
 
+    //printf("F:compare_cost\n");
+    //printf("D:uncarry:%d\n",uncarry_num);
     //コスト最小値
     int min = 999999;
     //最小値のブロック番号
@@ -259,7 +231,7 @@ int compare_cost(side* sideList, int uncarry_num, int *list){
     //未運搬数の数だけ繰り返し
     for(int i = 0; i < uncarry_num; i++){
         //目標値をリストから代入
-        int goal = b_pos[list[i]];
+        int goal = get_position(list[i]);
         //ルート(一時保存)
         int *ret = NULL;
         //コスト
@@ -268,6 +240,7 @@ int compare_cost(side* sideList, int uncarry_num, int *list){
         free(ret);
         if(min > cost){
             //最小値更新時
+            //printf(" cost:%d \n",cost);
             min = cost;
             min_num = list[i];
         }
@@ -307,6 +280,7 @@ int compare_cost(side* sideList, int uncarry_num, int *list){
     }
     
     //最小値ブロック番号を返却
+    //printf("min_num:%d\n",min_num);
     return min_num;
 }
 
@@ -315,34 +289,43 @@ int compare_cost(side* sideList, int uncarry_num, int *list){
 //******************   public   *****************
 
 //ルート参照
-void get_route(int ver, int hor, int ret[ver][hor]){
-    for(int j = 0; j < 12; j++){
-        for(int i = 0; i < 6; i++){
+void get_route(int ver, int ho, int ret[ver][ho]){
+    
+    for(int j = 0; j < ver; j++){
+        for(int i = 0; i < ho; i++){
             ret[j][i] = route[j][i];
         }
     }
+        
+    
 }
 
 
 
 //ルート探索
 bool_t search_root(){
+
     
-    //現在地初期化(一番左の緑マスからスタート)
+    //現在地初期化
     position_now = 10;
+
+
 
     //sideList(エッジ情報構造体)のメモリ確保
     side* sideList = (side*)malloc(sizeof(side) * sideNum);
     
     //sideListの初期化
     init_sidelist(sideList);
+	for (int i = 0; i < sideNum - 1; i++) {
+		sideList[i].next = &(sideList[i + 1]);
+	}
+	sideList[sideNum - 1].next = NULL;
     
     //位置情報初期化
     for(int i = 0; i < 5; i++){
-        b_pos[i] = get_position(i);
+        b_position[i] = get_position(i);
     }
-    //printf("Init_position\n");
-    //printf("0:%d,1:%d,2:%d,3:%d,4:%d\n",b_pos[0],b_pos[1],b_pos[2],b_pos[3],b_pos[4]);
+    
     //決定ルート初期化
     //攻略順リスト
     //初期は「黒、赤、黄、青、緑」
@@ -359,7 +342,7 @@ bool_t search_root(){
     int out_cnt = 0;
 
     
-    //五角形内にあるブロックを＋１し、内外リストを作成
+    //優先度から五角形内外リストに代入
     for(int i = 0; i < 5; i++){
         switch(get_priority(i)){
             case 0:
@@ -376,6 +359,11 @@ bool_t search_root(){
                 break;
         }
     }
+    printf("Order:%d,%d,%d,%d,%d\n",order[0],order[1],order[2],order[3],order[4]);
+    printf(" I n :%d,%d,%d,%d,%d\n",in_penta[0],in_penta[1],in_penta[2],in_penta[3],in_penta[4]);
+    printf("InCnt:%d\n",in_cnt);
+    printf("O u t:%d,%d,%d,%d,%d\n",out_penta[0],out_penta[1],out_penta[2],out_penta[3],out_penta[4]);
+    printf("OutCnt:%d\n",out_cnt);
 
 
     //EV3画面初期化
@@ -421,7 +409,6 @@ bool_t search_root(){
             case 0:
                 //ルート探索モードが０の場合
                 //ターゲットブロックを決定する
-                //printf("*** Move MODE ***\n");
 
 
                 //五角形内から攻略する
@@ -484,19 +471,11 @@ bool_t search_root(){
                 }
                 //攻略リストにターゲットを設定
                 order[bcnt] = target;
-                goal = b_pos[target];
+                goal = b_position[target];
                 break;
             case 1:
-                //printf("*** Carry MODE ***\n");
                 
                 //ルート探索モードが１の場合
-                //ブロックのあるマスを通らないようにエッジリスト更新
-                update_edgecost(sideList, order[bcnt]);
-                /*  エッジコスト表示
-                for(int i = 0; i < sideNum; i+=4){
-                    //printf("Cost:%d,%d,%d,%d\n",sideList[i].c,sideList[i+1].c,sideList[i+2].c,sideList[i+3].c);
-                }
-                */
                 //  ２：ブロックマス～～ポリゴンブロック置き場
                 //ターゲットマスを決定する
                 goal = decide_goal(order[bcnt]);
@@ -511,12 +490,10 @@ bool_t search_root(){
         //コスト
         int totalCost = 0;
 
-        ////printf("start:%d  goal:%d\n",start,goal);
+        //printf("start:%d  goal:%d\n",start,goal);
         dijsktra(N, sideList, start, goal, &ret, &totalCost);
             
-        //printf("Route:%d,%d,%d,%d,%d,%d\n",ret[0],ret[1],ret[2],ret[3],ret[4],ret[5]);
-        //printf("routeCost:%d\n",totalCost);
-
+        printf("%d,%d,%d,%d,%d,%d\n",ret[0],ret[1],ret[2],ret[3],ret[4],ret[5]);
 
         //ルート保存
         for(int i = 0; i < 6; i++){
@@ -528,32 +505,30 @@ bool_t search_root(){
         free(ret);
 
         //情報更新
-        //ルート配列縦番号
         linecnt++;
-        //ゴールした地点を現在地に更新
         position_now = goal;
 
         if(bmode == 1){
-            if(order[bcnt] == 0){
-                //printf("*** Block BLACK FINISH ***\n");
-            }else if(order[bcnt] == 1){
-                //printf("*** BLOCK RED FINISH ***\n");
-            }else if(order[bcnt] == 2){
-                //printf("*** BLOCK YELLOW FINISH ***\n");
-            }else if(order[bcnt] == 3){
-                //printf("*** BLOCK BLUE FINISH ***\n");
-            }else if(order[bcnt] == 4){
-                //printf("*** BLOCK GREEN FINISH ***\n");
+            if(bcnt == 0){
+                printf("**Block0 FINISH**\n");
+            }else if(bcnt == 1){
+                printf("**BLOCK1 FINISH**\n");
+            }else if(bcnt == 2){
+                printf("**BLOCK2 FINISH**\n");
+            }else if(bcnt == 3){
+                printf("**BLOCK3 FINISH**\n");
+            }else if(bcnt == 4){
+                printf("**BLOCK4 FINISH**\n");
             }
         }
 
 
-        //運搬モード時
+        
         if(bmode == 1){
             //運搬フラグを済みに更新
             set_block_carry(order[bcnt], true); 
             //ブロックの位置情報更新
-            b_pos[order[bcnt]] = position_now;
+            set_block_position(order[bcnt], true);
             //sideListを元に戻す
             init_sidelist(sideList);
             //ブロック移動終了カウント＋１
@@ -570,8 +545,8 @@ bool_t search_root(){
         }
     }
 
-    //printf("FINISH!!\n");
-    //printf("Order:%d,%d,%d,%d,%d\n",order[0],order[1],order[2],order[3],order[4]);
+    printf("FINISH!!\n");
+    printf("Order:%d,%d,%d,%d,%d\n",order[0],order[1],order[2],order[3],order[4]);
 
 
     //******  終了時右端の緑まで移動  *********
@@ -581,7 +556,7 @@ bool_t search_root(){
     //コスト
     int totalCost = 0;
     dijsktra(N, sideList, position_now, 11, &ret, &totalCost);
-    //printf("Route:%d,%d,%d,%d,%d,%d\n",ret[0],ret[1],ret[2],ret[3],ret[4],ret[5]);
+    printf("%d,%d,%d,%d,%d,%d\n",ret[0],ret[1],ret[2],ret[3],ret[4],ret[5]);
     //ルート保存
     for(int i = 0; i < 6; i++){
         route[linecnt][i] = ret[i];
@@ -591,13 +566,13 @@ bool_t search_root(){
     
 
     //ルート表示
-    //printf("*****ROUTE*****\n");
+    printf("*****ROUTE*****\n");
     for(int j = 0; j < linecnt; j++){
-        //printf("%d:",j);
+        printf("%d:",j);
         for(int i = 0; i < 6; i++){
-            //printf("%d,",route[j][i]);
+            printf("%d,",route[j][i]);
         }
-        //printf("\n");
+        printf("\n");
     }
     free(sideList);
     return true;

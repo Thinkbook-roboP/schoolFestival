@@ -2,6 +2,7 @@
 
 static int L_high = 0, L_low = 0;
 
+
 //腕の位置を固定化させる
 void lock_arm(){
     ev3_motor_set_power(EV3_PORT_A,-80);
@@ -16,6 +17,7 @@ void lock_arm(){
           ev3_motor_stop (EV3_PORT_A,true);
           ev3_motor_reset_counts(EV3_PORT_A);//リセット
 }
+
 
 //画面出力
 static void state_out_color(int mode)

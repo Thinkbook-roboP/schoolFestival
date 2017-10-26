@@ -16,24 +16,6 @@ int query_degree(int past,int now,int future){
     }
 
     switch(past){
-
-        case 0:
-            //過去:0の場合現在:10のみ
-            switch(future){
-                case 1:
-                    //過去:0,現在:10,未来:1
-                    return -45;
-                    break;
-                case 5:
-                    return 0;
-                    break;
-                case 12:
-                    return 90;
-                    break;
-
-            }
-        
-
          
         case 1:
         //過去
