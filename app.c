@@ -64,7 +64,8 @@ while (abs(ev3_motor_get_counts(right_motor)) < 260);
 ev3_motor_set_power(EV3_PORT_B,0);
 ev3_motor_set_power(EV3_PORT_C,0);
 
-pid_set_data(&gein,0.5,0.0,1);
+//バック走行時のPID
+pid_set_data(&gein, 0.5, 0.0, 1);
 pid_set_gain(&gein);
 
 while(ev3_motor_get_counts(EV3_PORT_B)<=3700){
@@ -92,13 +93,14 @@ ev3_motor_set_power(EV3_PORT_C,10);
 tslp_tsk(6500);//直進
 
 ev3_motor_stop(EV3_PORT_C,true);
-ev3_motor_set_power(EV3_PORT_B,50);
-//  ev3_motor_set_power(EV3_PORT_B,10);
+ev3_motor_set_power(EV3_PORT_B, 50);
+ev3_motor_set_power(EV3_PORT_C,-50);
 
-tslp_tsk(500);//左回転
+tslp_tsk(240);//左回転
 
 //  ev3_motor_stop(EV3_PORT_B,true);
 ev3_motor_stop(EV3_PORT_B,true);
+ev3_motor_stop(EV3_PORT_C,true);
   /*--------------ここまで--------------------------*/
 
   ev3_lcd_set_font(EV3_FONT_MEDIUM);
